@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Larissa App - Purwokerto</title>
+  <meta name="theme-color" content="#ffffff">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <!-- Favicon & Icon -->
+  <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/pw/AP1GczPsClAMuZr8jGobp1T63vXCnzOJ0AE7Yoru4irAj7HUbAaxZkTpR_JRJZtNFNLeIGu0hCr-ma89kntUmQZAr_li0P8kJ-id_w79D9XsHe4FnWLgFP5Ihld-ww2arEbYvDMQKbNRdeoJWArbDYGUIJ13=w933-h945-s-no-gm?authuser=0">
+  <link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/pw/AP1GczPsClAMuZr8jGobp1T63vXCnzOJ0AE7Yoru4irAj7HUbAaxZkTpR_JRJZtNFNLeIGu0hCr-ma89kntUmQZAr_li0P8kJ-id_w79D9XsHe4FnWLgFP5Ihld-ww2arEbYvDMQKbNRdeoJWArbDYGUIJ13=w933-h945-s-no-gm?authuser=0">
+
+  <!-- Manifest PWA Khusus Desktop -->
+  <script>
+    const manifestPWA = {
+      "name": "Larissa App",
+      "short_name": "Purwokerto",
+      "description": "Solusi membantu mengelola data laporan dengan lebih efisien dan modern.",
+      "start_url": ".",
+      "display": "standalone",
+      "background_color": "#ffffff",
+      "theme_color": "#ffffff",
+      "orientation": "any",
+      "icons": [
+        {
+          "src": "https://images.unsplash.com/photo-1785143266325-2fa61c9d462e?q=80",
+          "sizes": "192x192",
+          "type": "image/jpeg"
+        },
+        {
+          "src": "https://images.unsplash.com/photo-1785143266325-2fa61c9d462e?q=80",
+          "sizes": "512x512",
+          "type": "image/jpeg"
+        }
+      ]
+    };
+    const blob = new Blob([JSON.stringify(manifestPWA)], {type: 'application/json'});
+    const link = document.createElement('link');
+    link.rel = 'manifest';
+    link.href = URL.createObjectURL(blob);
+    document.head.appendChild(link);
+  </script>
+
+  <style>
+    body, html { 
+      margin: 0; 
+      padding: 0; 
+      width: 100vw; 
+      height: 100vh;
+      overflow: hidden; 
+      background-color: #0f172a; 
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+    .desktop-container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    iframe { 
+      width: 100%; 
+      height: 100%; 
+      border: none; 
+      display: block; 
+      background-color: #ffffff;
+    }
+    #loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #ffffff;
+      z-index: 9999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.5s;
+    }
+    .loading-img {
+      max-width: 500px;
+      max-height: 250px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+    }
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #009D7B;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="relative select-none">
+
+  <!-- DESKTOP SPLASH SCREEN -->
+  <div id="loading-screen">
+    <img 
+      src="https://lh3.googleusercontent.com/pw/AP1GczPVOpq7zqDnTcutl7sHkPHwwsnbybyHW30YpGPGS37scWo7iWuYlpT1gtUPKGUAG2XMnjac6YBe3h8X0GRJj76D53iTr9wSQ4QHGnupAR0IYlGD4JX5xkriNKH7xem0InU9hGnBmvVY_GYqb0Yu7PEp=w1920-h308-s-no-gm?authuser=0" 
+      alt="Loading..." 
+      class="loading-img"
+    >
+  </div>
+
+  <!-- CONTAINER UTAMA IFRAME DESKTOP -->
+  <div class="desktop-container">
+    <iframe 
+      id="app-frame" 
+      src="https://script.google.com/macros/s/AKfycbyYEJAnzZZPyAw_VIqBfZmEk8Dmu7MoHTUkGMr7IXBiTHSC-t1Lzl65AsG75hGsXehM/exec"
+      allow="autoplay; camera; microphone; clipboard-read; clipboard-write; geolocation; fullscreen">
+    </iframe>
+  </div>
+
+  <script>
+    const iframe = document.getElementById('app-frame');
+    const loadingScreen = document.getElementById('loading-screen');
+
+    // 1. Sembunyikan Splash Screen setelah Iframe selesai dimuat
+    iframe.addEventListener('load', function() {
+      setTimeout(() => {
+        loadingScreen.style.opacity = '0';
+        setTimeout(() => {
+          loadingScreen.style.visibility = 'hidden';
+        }, 500); 
+      }, 400);
+    });
+    
+    // 2. Registrasi Service Worker PWA
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        const swCode = `
+          self.addEventListener('install', e => self.skipWaiting());
+          self.addEventListener('fetch', e => e.respondWith(fetch(e.request)));
+        `;
+        const blobSW = new Blob([swCode], {type: 'application/javascript'});
+        navigator.serviceWorker.register(URL.createObjectURL(blobSW));
+      });
+    }
+  </script>
+</body>
+</html>
