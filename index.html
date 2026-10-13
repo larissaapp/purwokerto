@@ -6,11 +6,9 @@
   <title>Larissa App - Purwokerto</title>
   <meta name="theme-color" content="#ffffff">
   <meta name="apple-mobile-web-app-capable" content="yes">
-
   <!-- Favicon & Icon -->
   <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/pw/AP1GczPsClAMuZr8jGobp1T63vXCnzOJ0AE7Yoru4irAj7HUbAaxZkTpR_JRJZtNFNLeIGu0hCr-ma89kntUmQZAr_li0P8kJ-id_w79D9XsHe4FnWLgFP5Ihld-ww2arEbYvDMQKbNRdeoJWArbDYGUIJ13=w933-h945-s-no-gm?authuser=0">
   <link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/pw/AP1GczPsClAMuZr8jGobp1T63vXCnzOJ0AE7Yoru4irAj7HUbAaxZkTpR_JRJZtNFNLeIGu0hCr-ma89kntUmQZAr_li0P8kJ-id_w79D9XsHe4FnWLgFP5Ihld-ww2arEbYvDMQKbNRdeoJWArbDYGUIJ13=w933-h945-s-no-gm?authuser=0">
-
   <!-- Manifest PWA Khusus Desktop -->
   <script>
     const manifestPWA = {
@@ -52,28 +50,37 @@
       background-color: #0f172a; 
       font-family: system-ui, -apple-system, sans-serif;
     }
-    /* TRIK SKALA IFRAME 50% */
-    #app-frame { 
-      width: 200%; 
-      height: 200%; 
-      border: none; 
-      display: block; 
-      transform: scale(0.5); 
-      transform-origin: 0 0; 
-    }
     .desktop-container {
       width: 100%;
       height: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
+      position: relative;
+      overflow: hidden;
     }
     iframe { 
-      width: 100%; 
-      height: 100%; 
       border: none; 
       display: block; 
       background-color: #ffffff;
+    }
+    /* --- TRIK SKALA RESPONSIF IFRAME --- */
+    /* 1. Tampilan Smartphone & Tablet (Lebar Layar <= 1024px) */
+    @media screen and (max-width: 1024px) {
+      iframe {
+        width: 200%;                  /* Perluas canvas render iframe 2x lipat */
+        height: 200%;
+        transform: scale(0.5);        /* Skalakan turun 50% */
+        transform-origin: top left;  /* Kunci titik pusat skala di pojok kiri atas */
+      }
+    }
+    /* 2. Tampilan Desktop Normal (Lebar Layar > 1024px) */
+    @media screen and (min-width: 1025px) {
+      iframe {
+        width: 100%;
+        height: 100%;
+        transform: none;
+      }
     }
     #loading-screen {
       position: fixed;
@@ -91,7 +98,7 @@
     .loading-img {
       max-width: 500px;
       max-height: 250px;
-      width: auto;
+      width: 80%;
       height: auto;
       object-fit: contain;
     }
@@ -118,7 +125,6 @@
       class="loading-img"
     >
   </div>
-
   <!-- CONTAINER UTAMA IFRAME DESKTOP -->
   <div class="desktop-container">
     <iframe 
